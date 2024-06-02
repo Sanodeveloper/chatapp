@@ -23,7 +23,9 @@ services:
     build:
       context: .
       dockerfile: ./back/Dockerfile
-    command: /bin/bash
+    depends_on:
+      - mysql
+    command: /bin/bash -c "cd /api && ./api"
     stdin_open: true
     tty: true
 
@@ -37,7 +39,9 @@ services:
     build:
       context: .
       dockerfile: ./socket/Dockerfile
-    command: /bin/bash
+    depends_on:
+      - mysql
+    command: /bin/bash -c "./socket"
     stdin_open: true
     tty: true
 

@@ -6,5 +6,3 @@ COPY ./back/api .
 
 RUN go mod download
 RUN go build
-
-CMD ["./api"]

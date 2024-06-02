@@ -6,5 +6,3 @@ COPY ./socket/socket .
 
 RUN go mod download
 RUN go build
-
-CMD ["./socket"]
