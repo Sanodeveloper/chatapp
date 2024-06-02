@@ -35,6 +35,22 @@ docker compose up -d --build
 
  - [こちらから確認できる](http://localhost:3000/home)
 
+## トラブルシューティング
+通常10~20秒待つと画面が表示される。
+もしエラー画面になるようだったら以下のコマンドで確認してみてほしい
+```
+docker compose logs -f api
+docker compose logs -f socket
+```
+
+入力してどちらかにエラーが出ていたら以下のコマンドで再起動
+```
+docker compose down
+docker compose up -d
+```
+
+これを2~3回繰り返すといけるはず
+
 
 
 
