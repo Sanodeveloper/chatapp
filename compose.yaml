@@ -1,0 +1,86 @@
+services:
+  chat:
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: bind
+        source: ./front/chat
+        target: /chat
+    build:
+      context: .
+      dockerfile: ./front/Dockerfile
+    command: /bin/bash -c "cd /chat && npm start"
+    stdin_open: true
+    tty: true
+
+  api:
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: bind
+        source: ./back/api
+        target: /api
+    build:
+      context: .
+      dockerfile: ./back/Dockerfile
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+
+  socket:
+    ports:
+      - "8000:8000"
+    volumes:
+      - type: bind
+        source: ./socket/socket
+        target: /socket
+    build:
+      context: .
+      dockerfile: ./socket/Dockerfile
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+
+  mysql:
+    ports:
+      - "3306:3306"
+    build:
+      context: .
+      dockerfile: ./db/mysql/Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/root_password
+      MYSQL_DATABASE: chatapp
+      MYSQL_USER: chatapp_user
+      MYSQL_PASSWORD_FILE: /run/secrets/user_password
+    volumes:
+      - type: volume
+        source: mysql-volume
+        target: /var/lib/mysql
+    secrets:
+      - root_password
+      - user_password
+
+  migrator:
+    build:
+      context: .
+      dockerfile: ./db/migrator/Dockerfile
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_NAME: chatapp
+      DB_PORT: "3306"
+      DB_USERNAME: chatapp_user
+    command: /bin/bash -c "/migrator/migrate.sh $$DB_HOST $$DB_PORT $$DB_NAME $$DB_USERNAME /run/secrets/user_password up"
+    secrets:
+      - user_password
+
+secrets:
+  root_password:
+    file: ./db/secrets/root_password
+  user_password:
+    file: ./db/secrets/user_password
+
+volumes:
+  mysql-volume:
+

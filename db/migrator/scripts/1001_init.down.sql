@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS rooms;
+DROP TABLE IF EXISTS room_password;
+DROP TABLE IF EXISTS room_member;
+DROP TABLE IF EXISTS talk_log;
+DROP TABLE IF EXISTS session_info;
